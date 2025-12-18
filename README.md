@@ -374,4 +374,11 @@ Handling connection for 8080
 - Делаю коммит в ветку dev
 - Открываю pull-request
 <img width="944" height="198" alt="изображение" src="https://github.com/user-attachments/assets/8cafa88b-6fa4-4b64-a045-834b6ac01039" />
+
 - Прохожу код-ревью и делаю merge в ветку main
+<img width="941" height="905" alt="image_2025-12-18_15-51-01" src="https://github.com/user-attachments/assets/9701cf95-3576-4d24-89f2-191a22923d37" />
+
+<img width="1310" height="465" alt="изображение" src="https://github.com/user-attachments/assets/1ebcca31-bd08-4b5f-87e9-e503dd87e245" />
+
+- ArgoCD подхватил изменения
+<img width="1515" height="621" alt="изображение" src="https://github.com/user-attachments/assets/3e3ad009-e4f7-4ea2-b49b-5b16f6a15913" />
