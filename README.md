@@ -381,4 +381,4 @@ Handling connection for 8080
 <img width="1310" height="465" alt="изображение" src="https://github.com/user-attachments/assets/1ebcca31-bd08-4b5f-87e9-e503dd87e245" />
 
 - ArgoCD подхватил изменения
-<img width="1515" height="621" alt="изображение" src="https://github.com/user-attachments/assets/3e3ad009-e4f7-4ea2-b49b-5b16f6a15913" />
+<img width="1527" height="637" alt="изображение" src="https://github.com/user-attachments/assets/76719b82-8bed-4943-b112-d007d7d51de8" />
