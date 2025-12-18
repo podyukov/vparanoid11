@@ -239,4 +239,139 @@ Handling connection for 12345
 
 <img width="1402" height="321" alt="изображение" src="https://github.com/user-attachments/assets/0e86a396-c47e-4757-8020-e7ba326edf0d" />
 
-- 
+### ArgoCD
+- Устанавливаю ArgoCD
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl create namespace argocd
+namespace/argocd created
+ilya@podyukov-deb-2 ~/vparanoid11 (dev) [1]> kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+Warning: unrecognized format "int64"
+customresourcedefinition.apiextensions.k8s.io/applications.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/applicationsets.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/appprojects.argoproj.io created
+serviceaccount/argocd-application-controller created
+serviceaccount/argocd-applicationset-controller created
+serviceaccount/argocd-dex-server created
+serviceaccount/argocd-notifications-controller created 
+serviceaccount/argocd-redis created      
+serviceaccount/argocd-repo-server created
+serviceaccount/argocd-server created
+role.rbac.authorization.k8s.io/argocd-application-controller created
+role.rbac.authorization.k8s.io/argocd-applicationset-controller created
+role.rbac.authorization.k8s.io/argocd-dex-server created
+role.rbac.authorization.k8s.io/argocd-notifications-controller created
+role.rbac.authorization.k8s.io/argocd-redis created
+role.rbac.authorization.k8s.io/argocd-server created
+clusterrole.rbac.authorization.k8s.io/argocd-application-controller created
+clusterrole.rbac.authorization.k8s.io/argocd-applicationset-controller created
+clusterrole.rbac.authorization.k8s.io/argocd-server created
+rolebinding.rbac.authorization.k8s.io/argocd-application-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-applicationset-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-dex-server created
+rolebinding.rbac.authorization.k8s.io/argocd-notifications-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-redis created
+rolebinding.rbac.authorization.k8s.io/argocd-server created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-application-controller created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-applicationset-controller created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-server created
+configmap/argocd-cm created
+configmap/argocd-cmd-params-cm created
+configmap/argocd-gpg-keys-cm created
+configmap/argocd-notifications-cm created
+configmap/argocd-rbac-cm created
+configmap/argocd-ssh-known-hosts-cm created
+configmap/argocd-tls-certs-cm created
+secret/argocd-notifications-secret created
+secret/argocd-secret created
+service/argocd-applicationset-controller created
+service/argocd-dex-server created
+service/argocd-metrics created
+service/argocd-notifications-controller-metrics created
+service/argocd-redis created
+service/argocd-repo-server created
+service/argocd-server created
+service/argocd-server-metrics created
+deployment.apps/argocd-applicationset-controller created
+deployment.apps/argocd-dex-server created
+deployment.apps/argocd-notifications-controller created
+deployment.apps/argocd-redis created
+deployment.apps/argocd-repo-server created
+deployment.apps/argocd-server created
+statefulset.apps/argocd-application-controller created
+networkpolicy.networking.k8s.io/argocd-application-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-applicationset-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-dex-server-network-policy created
+networkpolicy.networking.k8s.io/argocd-notifications-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-redis-network-policy created
+networkpolicy.networking.k8s.io/argocd-repo-server-network-policy created
+networkpolicy.networking.k8s.io/argocd-server-network-policy created
+```
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl get deployments -n argocd
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+argocd-applicationset-controller   1/1     1            1           74s
+argocd-dex-server                  1/1     1            1           74s
+argocd-notifications-controller    1/1     1            1           73s
+argocd-redis                       1/1     1            1           73s
+argocd-repo-server                 1/1     1            1           73s
+argocd-server                      1/1     1            1           73s
+```
+- Вытаскиваю стартовый админский пароль
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl -n argocd get secret argocd-initial-admin-secret --template={{.data.password}} | base64 -d
+p1P5cFDMXC7v6Uck⏎
+```
+- Пробрасываю api-сервис ArgoCD наружу
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev) [1]> kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+service/argocd-server patched
+ilya@podyukov-deb-2 ~/vparanoid11 (dev) [1]> kubectl patch svc argocd-server -n argocd -p '{"spec": {"externalIPs": [ "10.101.249.250" ]}}'
+service/argocd-server patched
+```
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl config set-context --current --namespace=argocd
+Context "minikube" modified.
+ilya@podyukov-deb-2 ~/vparanoid11 (dev) [1]> kubectl get service
+NAME                                      TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
+argocd-applicationset-controller          ClusterIP      10.101.170.62    <none>           7000/TCP,8080/TCP            7m28s
+argocd-dex-server                         ClusterIP      10.105.215.9     <none>           5556/TCP,5557/TCP,5558/TCP   7m28s
+argocd-metrics                            ClusterIP      10.99.3.48       <none>           8082/TCP                     7m28s
+argocd-notifications-controller-metrics   ClusterIP      10.111.111.221   <none>           9001/TCP                     7m28s
+argocd-redis                              ClusterIP      10.107.248.87    <none>           6379/TCP                     7m28s
+argocd-repo-server                        ClusterIP      10.107.79.216    <none>           8081/TCP,8084/TCP            7m28s
+argocd-server                             LoadBalancer   10.96.80.110     10.101.249.250   80:32532/TCP,443:31416/TCP   7m28s
+argocd-server-metrics                     ClusterIP      10.97.136.138    <none>           8083/TCP                     7m28s
+ilya@podyukov-deb-2 ~/vparanoid11 (dev) [1]> kubectl port-forward --address 0.0.0.0 svc/argocd-server 8080:80
+Forwarding from 0.0.0.0:8080 -> 8080
+Handling connection for 8080
+Handling connection for 8080
+E1218 10:24:03.031795 1500526 portforward.go:404] "Unhandled Error" err="error copying from local connection to remote stream: writeto tcp4 10.101.249.250:8080->10.101.14.143:65212: read tcp4 10.101.249.250:8080->10.101.14.143:65212: read: connection reset by peer"
+Handling connection for 8080
+```
+- Попадаю в веб интерфейс
+<img width="1669" height="781" alt="изображение" src="https://github.com/user-attachments/assets/62914997-be07-4303-8574-76e3b9fb2dba" />
+
+- Беру с ВМ приватный ключ для репозитория github
+<img width="832" height="627" alt="изображение" src="https://github.com/user-attachments/assets/9f4240f0-f92c-4776-94a1-f5feefed093d" />
+
+<img width="1065" height="135" alt="изображение" src="https://github.com/user-attachments/assets/9cda2e56-c7ea-4b24-a917-98c4a2b12933" />
+
+- Подключаю манифесты приложения для контроля состояния
+<img width="1193" height="846" alt="изображение" src="https://github.com/user-attachments/assets/77cf766b-08f3-4882-9ce5-03f6ad8f0fab" />
+
+- Выбираю репо, указываю ветку для отслеживания и путь к манифестам
+<img width="391" height="351" alt="изображение" src="https://github.com/user-attachments/assets/31f8cbea-da36-48a5-a7ad-276d704d2806" />
+
+- Указываю реквизиты кластера k8s и пространство имен
+<img width="284" height="225" alt="изображение" src="https://github.com/user-attachments/assets/b51f77ec-fcda-4c42-a644-f92174e87ef4" />
+
+- Устанавливаю приложение
+<img width="417" height="375" alt="изображение" src="https://github.com/user-attachments/assets/ebe3e925-5ca0-4a95-8f15-feb3743c1a8c" />
+
+<img width="1527" height="525" alt="изображение" src="https://github.com/user-attachments/assets/009fe23e-7611-4068-9473-2b4d44b4150f" />
+
+- Проверяем. Добавляю server/index.html и правлю докер файл
+- Делаю коммит в ветку dev
+- Открываю pull-request
+<img width="944" height="198" alt="изображение" src="https://github.com/user-attachments/assets/8cafa88b-6fa4-4b64-a045-834b6ac01039" />
+- Прохожу код-ревью и делаю merge в ветку main
