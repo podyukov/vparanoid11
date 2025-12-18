@@ -48,6 +48,8 @@ branch 'dev' set up to track 'origin/dev'.
 - В вебке гитхаба разрешаю только merge-requests
 <img width="1181" height="646" alt="изображение" src="https://github.com/user-attachments/assets/4db5a41a-174a-4b1c-97d5-71836f0f24a7" />
 
+## CI
+
 - Добавляю CI-пайплайны
 <img width="1112" height="586" alt="изображение" src="https://github.com/user-attachments/assets/bc6a926e-4c98-40c4-ad18-f4c2fa16026d" />
 
@@ -120,4 +122,102 @@ Error: Process completed with exit code 16.
 
 <img width="701" height="383" alt="изображение" src="https://github.com/user-attachments/assets/d133c11e-9703-4a88-973e-c09460e7a1d2" />
 
-- 
+- Создаю k8s манифест server-k8s-manifests/devops-psu.yml
+- Удаляю деплойменты прошлой лабораторной работы
+- Применяю k8s-манифесты
+```
+ilya@podyukov-deb-2 ~> kubectl create namespace devops-psu
+namespace/devops-psu created
+ilya@podyukov-deb-2 ~/v/server-k8s-manifests (dev)> kubectl apply -f devops-psu.yml 
+deployment.apps/devops-psu created
+service/service-devops created
+```
+- Авторизуюсь в своём репозитории
+```
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> docker login -u ilyapod
+
+i Info → A Personal Access Token (PAT) can be used instead.
+         To create a PAT, visit https://app.docker.com/settings
+
+
+Password:
+
+WARNING! Your credentials are stored unencrypted in '/home/ilya/.docker/config.json'.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/go/credential-store/
+
+Login Succeeded
+```
+- Собираю образ и заливаю его в репозиторий
+```
+ilya@podyukov-deb-2 ~/v/server (dev)> docker build -t ilyapod/devops-psu:latest .
+[+] Building 9.7s (12/12) FINISHED                                                                         docker:default
+ => [internal] load build definition from dockerfile                                                                 0.0s
+ => => transferring dockerfile: 375B                                                                                 0.0s 
+ => [internal] load metadata for docker.io/library/python:3.7-slim                                                   2.2s 
+ => [auth] library/python:pull token for registry-1.docker.io                                                        0.0s
+ => [internal] load .dockerignore                                                                                    0.0s
+ => => transferring context: 2B                                                                                      0.0s 
+ => [1/6] FROM docker.io/library/python:3.7-slim@sha256:b53f496ca43e5af6994f8e316cf03af31050bf7944e0e4a308ad86c001c  5.2s 
+ => => resolve docker.io/library/python:3.7-slim@sha256:b53f496ca43e5af6994f8e316cf03af31050bf7944e0e4a308ad86c001c  0.0s 
+ => => sha256:39312d8b4ab77de264678427265a2668073675bb8666caf723da18c9e4b7e3fc 3.13MB / 3.13MB                       0.5s 
+ => => sha256:f9afc3cc0135aad884dad502f28a5b3d8cd32565116131da818ebf2ea6d46095 244B / 244B                           0.7s 
+ => => sha256:8973eb85275f19b8d72c6047560629116ad902397e5c1885b2508788197de28b 11.38MB / 11.38MB                     1.2s
+ => => sha256:a803e7c4b030119420574a882a52b6431e160fceb7620f61b525d49bc2d58886 29.12MB / 29.12MB                     2.0s
+ => => sha256:bf3336e84c8e00632cdea35b18fec9a5691711bdc8ac885e3ef54a3d5ff500ba 3.50MB / 3.50MB                       1.9s 
+ => => extracting sha256:a803e7c4b030119420574a882a52b6431e160fceb7620f61b525d49bc2d58886                            1.7s 
+ => => extracting sha256:bf3336e84c8e00632cdea35b18fec9a5691711bdc8ac885e3ef54a3d5ff500ba                            0.2s
+ => => extracting sha256:8973eb85275f19b8d72c6047560629116ad902397e5c1885b2508788197de28b                            0.7s
+ => => extracting sha256:f9afc3cc0135aad884dad502f28a5b3d8cd32565116131da818ebf2ea6d46095                            0.0s
+ => => extracting sha256:39312d8b4ab77de264678427265a2668073675bb8666caf723da18c9e4b7e3fc                            0.4s 
+ => [internal] load build context                                                                                    0.1s 
+ => => transferring context: 800B                                                                                    0.0s 
+ => [2/6] RUN mkdir -p /usr/local/http-server                                                                        0.6s 
+ => [3/6] RUN useradd runner -d /home/runner -m -s /bin/bash                                                         0.4s 
+ => [4/6] WORKDIR /usr/local/http-server                                                                             0.1s 
+ => [5/6] ADD ./application.py /usr/local/http-server/application.py                                                 0.0s 
+ => [6/6] RUN chown -R runner:runner /usr/local/http-server/                                                         0.3s 
+ => exporting to image                                                                                               0.5s 
+ => => exporting layers                                                                                              0.3s 
+ => => exporting manifest sha256:b6910a64ae9d8193e1c1bf5ad7d990d776ee9a96b2604989b2f78be9a68617ed                    0.0s 
+ => => exporting config sha256:b8122b1fb13278f0891b81e2e38967f5db8c73e10b637f09e8c8796c3a815760                      0.0s 
+ => => exporting attestation manifest sha256:73bf1869f249a6c92cbb22b8f848899376909da02ae072685adbd5df867c234a        0.0s 
+ => => exporting manifest list sha256:4dff82ffe217743850df4a266664ee88f869fb15e62a210820a4f416f07b191f               0.0s 
+ => => naming to docker.io/ilyapod/devops-psu:latest                                                                 0.0s 
+ => => unpacking to docker.io/ilyapod/devops-psu:latest                                                              0.1s
+ilya@podyukov-deb-2 ~/v/server (dev)> docker push ilyapod/devops-psu:latest
+The push refers to repository [docker.io/ilyapod/devops-psu]
+a803e7c4b030: Pushed
+5d09c54e1297: Pushed
+fdad93741f0f: Pushed
+f9afc3cc0135: Pushed
+bed304655c68: Pushed
+3216ac46fbf8: Pushed
+39312d8b4ab7: Pushed
+4f4fb700ef54: Pushed
+8973eb85275f: Pushed
+bf3336e84c8e: Pushed
+16296d10a69b: Pushed
+latest: digest: sha256:4dff82ffe217743850df4a266664ee88f869fb15e62a210820a4f416f07b191f size: 856
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl apply -f server-k8s-manifests/devops-psu.yml
+deployment.apps/devops-psu unchanged
+service/service-devops unchanged
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl get pods
+NAME                          READY   STATUS    RESTARTS   AGE
+devops-psu-5979c5f77c-zs2pc   1/1     Running   0          14m
+```
+- Переключаюсь в namespace devops-psu и пробрасываю порты
+```
+ilya@podyukov-deb-2 ~/v/server-k8s-manifests (dev)> kubectl config set-context --current --namespace=devops-psu
+Context "minikube" modified.
+ilya@podyukov-deb-2 ~/vparanoid11 (dev)> kubectl port-forward --address 0.0.0.0 svc/service-devops 12345:12345
+Forwarding from 0.0.0.0:12345 -> 8000
+Handling connection for 12345
+Handling connection for 12345
+Handling connection for 12345
+```
+- Проверяю работу в браузере
+<img width="575" height="183" alt="изображение" src="https://github.com/user-attachments/assets/9f43893b-990e-4a6a-9528-0c9d08c5b30a" />
+
+## CD
+
