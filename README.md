@@ -98,4 +98,26 @@ To github.com:podyukov/vparanoid11.git
 <img width="453" height="140" alt="изображение" src="https://github.com/user-attachments/assets/d90f6376-c230-42be-acdf-859975d059e7" />
 <img width="515" height="134" alt="изображение" src="https://github.com/user-attachments/assets/4eaeabac-f91f-4d18-8499-db3573571dc0" />
 
+- Снова исправляю ошибку, unit-tests прошёл успешно, lint ещё жалуется
+<img width="652" height="456" alt="изображение" src="https://github.com/user-attachments/assets/4e8d195b-c73d-4879-9566-da804ad25d1e" />
+
+```
+Installing collected packages: typing-extensions, tomlkit, tomli, pygments, pluggy, platformdirs, packaging, mccabe, isort, iniconfig, dill, exceptiongroup, astroid, pytest, pylint
+
+Successfully installed astroid-4.0.2 dill-0.4.0 exceptiongroup-1.3.1 iniconfig-2.3.0 isort-7.0.0 mccabe-0.7.0 packaging-25.0 platformdirs-4.5.1 pluggy-1.6.0 pygments-2.19.2 pylint-4.0.4 pytest-9.0.2 tomli-2.3.0 tomlkit-0.13.3 typing-extensions-4.15.0
+************* Module application
+server/application.py:14:0: C0303: Trailing whitespace (trailing-whitespace)
+server/application.py:23:0: C0303: Trailing whitespace (trailing-whitespace)
+server/application.py:36:0: C0303: Trailing whitespace (trailing-whitespace)
+
+-----------------------------------
+Your code has been rated at 7.69/10
+
+Error: Process completed with exit code 16.
+```
+- Наконец-то тесты прошли успешно
+<img width="507" height="236" alt="изображение" src="https://github.com/user-attachments/assets/584d2380-b312-462b-a2bc-25c84186c2dd" />
+
+<img width="701" height="383" alt="изображение" src="https://github.com/user-attachments/assets/d133c11e-9703-4a88-973e-c09460e7a1d2" />
+
 - 
